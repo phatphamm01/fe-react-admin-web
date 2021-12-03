@@ -39,11 +39,11 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "webpack serve"
+    "start": "webpack-dev-server --mode development",
+    "dev": "webpack serve",
+    "build": "webpack --mode production"
   },
   "eslintConfig": {
     "extends": "react-app"
