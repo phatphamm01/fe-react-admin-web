@@ -2,6 +2,7 @@ import Loading from "@components/Loading";
 import React, { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AddProductPage from "./AddProduct";
+import OrderPage from "./Order";
 import ProductDetailPage from "./ProductDetail";
 import ProductListPage from "./ProductList";
 
@@ -16,6 +17,7 @@ const App: React.FC<IApp> = () => {
         <Route path="/product-list" element={<ProductListPage />} />
         <Route path="/product-add" element={<AddProductPage />} />
         <Route path="/product-edit/:id" element={<ProductDetailPage />} />
+        <Route path="/order" element={<OrderPage />} />
         <Route path="/" element={<Navigate replace to="/dashboard" />} />
       </Routes>
     </Suspense>

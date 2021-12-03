@@ -8,6 +8,8 @@ import PageHeaderAlt from "@components/layout/PageHeaderAlt";
 import { v4 as uuidv4 } from "uuid";
 import { useAppDispatch, useAppSelector } from "@hook/redux";
 import { getProductDetail } from "@redux/slices/product";
+import fetchProduct from "@services/products";
+import Resizer from "react-image-file-resizer";
 
 const { TabPane } = Tabs;
 
@@ -19,6 +21,33 @@ function getBase64(file: any) {
     reader.onerror = (error) => reject(error);
   });
 }
+
+const _getBase64 = (file: any) => {
+  let src = file.url;
+
+  if (!src) {
+    src = new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file.originFileObj);
+      reader.onload = () => resolve(reader.result);
+    });
+  }
+
+  return src;
+
+  // Resizer.imageFileResizer(
+  //   file,
+  //   500,
+  //   500,
+  //   "JPEG",
+  //   100,
+  //   0,
+  //   (uri) => {
+  //     resolve(uri);
+  //   },
+  //   "base64"
+  // );
+};
 
 const ADD = "ADD";
 const EDIT = "EDIT";
@@ -50,36 +79,39 @@ const ProductForm = (props: any) => {
   useEffect(() => {
     console.log(productDetail);
 
-    form.setFieldsValue({
-      description: productDetail.longDescription,
-      category: productDetail.categories,
-      name: productDetail.name,
-      tags: productDetail.filters,
-      price: productDetail.price,
-      discountPrice: productDetail.discountPrice,
-      variants: productDetail.variants,
-      brand: productDetail.brandId,
-      color: productDetail.color,
-    });
+    if (mode === EDIT) {
+      form.setFieldsValue({
+        longDescription: productDetail.longDescription,
+        shortDescription: productDetail.shortDescription,
+        categories: productDetail.categories,
+        name: productDetail.name,
+        tags: productDetail.filters,
+        price: productDetail.price,
+        discountPrice: productDetail.discountPrice,
+        variants: productDetail.variants,
+        brand: productDetail.brandId,
+        color: productDetail.color,
+      });
 
-    setCategoriesSelected(productDetail.categories);
+      setCategoriesSelected(productDetail.categories);
 
-    let image = productDetail.images?.map((value) => ({
-      uid: uuidv4(),
-      url: value,
-    }));
+      let image = productDetail.images?.map((value) => ({
+        uid: uuidv4(),
+        url: value,
+      }));
 
-    if (image && image.length > 0) {
-      setUploadedImg(image);
-    }
+      if (image && image.length > 0) {
+        setUploadedImg(image);
+      }
 
-    let imageCover = productDetail.imageCovers?.map((value) => ({
-      uid: uuidv4(),
-      url: value,
-    }));
+      let imageCover = productDetail.imageCovers?.map((value) => ({
+        uid: uuidv4(),
+        url: value,
+      }));
 
-    if (image && image.length > 0) {
-      setUploadedImgCover(imageCover);
+      if (image && image.length > 0) {
+        setUploadedImgCover(imageCover);
+      }
     }
   }, [productDetail]);
 
@@ -93,6 +125,17 @@ const ProductForm = (props: any) => {
         url: imageBase64,
       },
     ]);
+    // setUploadedImg(newFileList);
+  };
+
+  const handleRemoveImg = (id: string) => {
+    let newList = uploadedImg.reduce(
+      (result: any, value: any) =>
+        value.uid !== id ? [...result, value] : [...result],
+      []
+    );
+
+    setUploadedImg(newList);
   };
 
   const handleUploadChangeImgCover = async (e: any) => {
@@ -108,22 +151,39 @@ const ProductForm = (props: any) => {
   };
 
   const onFinish = () => {
-    setSubmitLoading(true);
+    // setSubmitLoading(true);
     form
       .validateFields()
-      .then((values) => {
-        setTimeout(() => {
-          setSubmitLoading(false);
-          if (mode === ADD) {
-            message.success(`Created ${values.name} to product list`);
-          }
-          if (mode === EDIT) {
-            message.success(`Product saved`);
-          }
-        }, 1500);
+      .then(async (values) => {
+        // setSubmitLoading(false);
+        let data = {
+          ...productDetail,
+          ...values,
+          images: uploadedImg.map((value: any) => value.url || value.thumbUrl),
+          imageCovers: uploadedImgCover.map(
+            (value: any) => value.url || value.thumbUrl
+          ),
+        };
+
+        console.log(uploadedImg);
+        console.log(data);
+
+        delete data._id;
+
+        if (mode === ADD) {
+          message.success(`Created ${values.name} to product list`);
+        }
+        if (mode === EDIT) {
+          await fetchProduct.addProduct({
+            id: productDetail._id,
+            data: data,
+          });
+          message.success(`Product saved`);
+        }
       })
       .catch((info) => {
-        setSubmitLoading(false);
+        // setSubmitLoading(false);
+
         console.log("info", info);
         message.error("Please enter all required field ");
       });
@@ -173,6 +233,7 @@ const ProductForm = (props: any) => {
               <GeneralField
                 uploadedImg={uploadedImg}
                 handleUploadChangeImg={handleUploadChangeImg}
+                handleRemoveImg={handleRemoveImg}
                 handleUploadChangeImgCover={handleUploadChangeImgCover}
                 uploadedImgCover={uploadedImgCover}
               />

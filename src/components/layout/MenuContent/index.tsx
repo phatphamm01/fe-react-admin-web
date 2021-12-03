@@ -20,12 +20,15 @@ const MenuContentContainer = styled.div`
 interface IMenuContent {}
 
 const MenuContent: React.FC<IMenuContent> = () => {
+  const params = useParams();
+
   return (
     <MenuContentContainer>
       <Menu
         style={{ fontWeight: 500 }}
         theme="light"
         defaultSelectedKeys={["dashboard"]}
+        selectedKeys={[params?.["*"] || ""]}
         mode="inline"
       >
         {navList.map((navlv1) =>

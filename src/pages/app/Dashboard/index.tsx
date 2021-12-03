@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Row,
   Col,
@@ -38,6 +38,9 @@ import {
 import utils from "src/utils";
 
 import { useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@hook/redux";
+import { getDashboards } from "@redux/slices/dashboard";
+import moment from "moment";
 
 const MembersChart = (props: any) => <ApexChart {...props} />;
 
@@ -115,17 +118,24 @@ const cardDropdown = (menu: any) => (
   </Dropdown>
 );
 
+function randColor() {
+  for (var i = 0, col = ""; i < 6; i++) {
+    col += ((Math.random() * 16) | 0).toString(16);
+  }
+  return "#" + col;
+}
+
 const tableColumns = [
   {
     title: "Customer",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "_id",
+    key: "_id",
     render: (text: any, record: any) => (
       <div className="d-flex align-items-center">
         <Avatar
           size={30}
           className="font-size-sm"
-          style={{ backgroundColor: record.avatarColor }}
+          style={{ backgroundColor: randColor() }}
         >
           {utils.getNameInitial(text)}
         </Avatar>
@@ -135,43 +145,121 @@ const tableColumns = [
   },
   {
     title: "Date",
-    dataIndex: "date",
-    key: "date",
+    dataIndex: "createAt",
+    render: (_: any, record: any) => (
+      <span>{moment(record.createAt).format("MMMM Do YYYY, h:mm:ss a")}</span>
+    ),
+    key: "createAt",
   },
   {
     title: "Amount",
     dataIndex: "amount",
     key: "amount",
-  },
-  {
-    title: () => <div className="text-right">Status</div>,
-    key: "status",
-    render: (_: any, record: any) => (
-      <div className="text-right">
-        <Tag
-          className="mr-0"
-          color={
-            record.status === "Approved"
-              ? "cyan"
-              : record.status === "Pending"
-              ? "blue"
-              : "volcano"
-          }
-        >
-          {record.status}
-        </Tag>
-      </div>
-    ),
+    render: (_: any, record: any) => <span>${record.amount}</span>,
   },
 ];
 
 export const DefaultDashboard = () => {
-  const [visitorChartData] = useState(VisitorChartData);
-  const [annualStatisticData] = useState(AnnualStatisticData);
-  const [activeMembersData] = useState(ActiveMembersData);
-  const [newMembersData] = useState(NewMembersData);
-  const [recentTransactionData] = useState(RecentTransactionData);
-  // const { direction } = useSelector((state) => state.theme);
+  const dispatch = useAppDispatch();
+
+  const [visitorChartData, setVisitorChartData] = useState<{
+    series: {
+      name: string;
+      data: number[];
+    }[];
+    categories: string[];
+  }>(VisitorChartData);
+  const [annualStatisticData, setAnnualStatisticData] = useState<
+    {
+      title: string;
+      value: string;
+      status: number;
+      subtitle: string;
+    }[]
+  >(AnnualStatisticData);
+  const [activeMembersData, setActiveMembersData] = useState<
+    {
+      name: string;
+      data: number[];
+    }[]
+  >(ActiveMembersData);
+  const [newMembersData, setNewMembersData] = useState<
+    {
+      img: string;
+      title: string;
+      name: string;
+    }[]
+  >(NewMembersData);
+  const [recentTransactionData, setRecentTransactionData] = useState();
+  const { dashboard } = useAppSelector((state) => state.dashboardReducers);
+
+  useEffect(() => {
+    getDashboardApi();
+  }, []);
+  useEffect(() => {
+    if (dashboard && dashboard.chartSale) {
+      let {
+        chartSale = [],
+        chartUser = [],
+        sale,
+        sold,
+        user,
+        newBills,
+        newUsers,
+      } = dashboard;
+      setVisitorChartData({
+        series: [
+          {
+            name: "$",
+            data: chartSale.values,
+          },
+        ],
+        categories: chartSale.categories,
+      });
+
+      setActiveMembersData([
+        {
+          name: "User",
+          data: chartUser.values,
+        },
+      ]);
+
+      setAnnualStatisticData([
+        {
+          title: "Sale",
+          value: "$" + sale.total,
+          status: Number(sale.totalGrowthRate),
+          subtitle: "Compare to " + sale.prevMonth,
+        },
+        {
+          title: "Sold",
+          value: "$" + sold.count,
+          status: Number(sold.countGrowthRate),
+          subtitle: "Compare to " + sold.prevMonth,
+        },
+        {
+          title: "User",
+          value: user.newUser + "",
+          status: Number(user.newUserGrowthRate),
+          subtitle: "Compare to " + user.prevMonth,
+        },
+      ]);
+
+      setRecentTransactionData(newBills);
+
+      setNewMembersData(
+        newUsers.map((value: any) => ({
+          img: "/img/avatars/thumb-2.jpg",
+          title: value.email,
+          name: value.fname + " " + value.lname,
+        }))
+      );
+    }
+  }, [dashboard]);
+
+  const getDashboardApi = () => {
+    dispatch(getDashboards());
+  };
 
   return (
     <>
@@ -193,8 +281,8 @@ export const DefaultDashboard = () => {
             <Col span={24}>
               <ChartWidget
                 title="Unique Visitors"
-                series={visitorChartData.series}
-                xAxis={visitorChartData.categories}
+                series={visitorChartData?.series}
+                xAxis={visitorChartData?.categories}
                 height={"400px"}
                 direction={"ltr"}
               />
@@ -213,11 +301,9 @@ export const DefaultDashboard = () => {
               <MembersChart
                 options={memberChartOption}
                 series={activeMembersData}
-                height={145}
+                height={186}
               />
             }
-            value="17,329"
-            status={3.7}
             subtitle="Active members"
           />
         </Col>
@@ -240,20 +326,12 @@ export const DefaultDashboard = () => {
                     name={elm.name}
                     subTitle={elm.title}
                   />
-                  <div>
-                    <Button
-                      icon={<UserAddOutlined />}
-                      type="default"
-                      size="small"
-                    >
-                      Add
-                    </Button>
-                  </div>
                 </div>
               ))}
             </div>
           </Card>
         </Col>
+
         <Col xs={24} sm={24} md={24} lg={17}>
           <Card
             title="Latest Transactions"
@@ -263,7 +341,7 @@ export const DefaultDashboard = () => {
               className="no-border-last"
               columns={tableColumns}
               dataSource={recentTransactionData}
-              rowKey="id"
+              rowKey="_id"
               pagination={false}
             />
           </Card>

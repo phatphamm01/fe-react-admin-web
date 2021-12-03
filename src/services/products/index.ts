@@ -7,6 +7,7 @@ const url = {
   getProductDetail: ({ id }: any) => `products/${id}`,
   getFacet: (payload: any) => `categories/${payload.id}/products/facets`,
   getVariant: (payload: any) => `products/${payload.id}/variations`,
+  addProduct: (payload: any) => `products/${payload.id}`,
 };
 
 const fetchProduct = {
@@ -32,6 +33,13 @@ const fetchProduct = {
   },
   async getVariant(payload: any) {
     const response = await AxiosService.get(url.getVariant(payload));
+    return response;
+  },
+  async addProduct(payload: any) {
+    const response = await AxiosService.patch(
+      url.addProduct(payload),
+      payload.data
+    );
     return response;
   },
 };

@@ -44,8 +44,6 @@ const Pages: React.FC<IPage> = () => {
 export default Pages;
 
 const RouteInterceptor: React.FC<any> = ({ children, isAuthenticated }) => {
-  console.log(isAuthenticated);
-
   return isAuthenticated ? (
     children
   ) : (

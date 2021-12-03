@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, TreeSelect, Input, Button, Badge, Menu } from "antd";
-import ProductListData from "src/assets/data/product-list.data.json";
+import { Card, Table, TreeSelect, Input, Button, Menu } from "antd";
 import {
   EyeOutlined,
   DeleteOutlined,
@@ -16,8 +15,9 @@ import utils from "src/utils";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@hook/redux";
 import { getCategories } from "@redux/slices/common";
-import { getAllProducts, getProductsByType } from "@redux/slices/product";
+import { getProductsByType } from "@redux/slices/product";
 import { IAllProducts, IProduct } from "@redux/types/product";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 
 const { TreeNode } = TreeSelect;
 
@@ -29,7 +29,6 @@ const ProductList = () => {
 
   const [list, setList] = useState<IAllProducts>();
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -71,7 +70,7 @@ const ProductList = () => {
   );
 
   const addProduct = () => {
-    navigate(`/add-product`);
+    navigate(`/product-add`);
   };
 
   const viewDetails = (row: IProduct) => {
@@ -133,7 +132,13 @@ const ProductList = () => {
       title: "Special",
       dataIndex: "isFeatured",
       render: (_: any, record: IProduct) => (
-        <Flex alignItems="center">{record.isFeatured ? "True" : "False"}</Flex>
+        <Flex alignItems="center">
+          {record.isFeatured ? (
+            <StarFilled style={{ fontSize: "20px", color: "red" }} />
+          ) : (
+            <StarOutlined style={{ fontSize: "20px" }} />
+          )}
+        </Flex>
       ),
       sorter: (a: any, b: any) => utils.antdTableSorter(a, b, "stock"),
     },
@@ -148,13 +153,6 @@ const ProductList = () => {
     },
   ];
 
-  const rowSelection = {
-    onChange: (key: any, rows: any) => {
-      setSelectedRows(rows);
-      setSelectedRowKeys(key);
-    },
-  };
-
   const onSearch = (e: any) => {
     const value = e.currentTarget.value;
     const searchArray = e.currentTarget.value ? list : productsByType;
@@ -164,7 +162,6 @@ const ProductList = () => {
 
   const handleShowCategory = (value: string) => {
     let id = value.split("/").at(0) + "";
-
 
     handleGetProductApi(id);
     setList(productsByType);
@@ -177,7 +174,6 @@ const ProductList = () => {
           <div className="mr-md-3 mb-3">
             <Input
               placeholder="Search"
-              style={{ minWidth: 240 }}
               prefix={<SearchOutlined />}
               onChange={(e) => onSearch(e)}
             />

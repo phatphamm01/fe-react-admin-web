@@ -44,22 +44,22 @@ export const VisitorChartData = {
 
 export const AnnualStatisticData = [
   {
-    title: "Revenue",
+    title: "Sale",
     value: "$2,454",
     status: -11.4,
-    subtitle: `Compare to last year (2019)`,
+    subtitle: `Compare to last year (2021)`,
   },
   {
-    title: "Sales",
+    title: "Sold",
     value: "$6,982",
     status: 8.2,
-    subtitle: `Compare to last year (2019)`,
+    subtitle: `Compare to last year (2021)`,
   },
   {
-    title: "Costs",
-    value: "$8,310",
+    title: "User",
+    value: "8,310",
     status: 0.7,
-    subtitle: `Compare to last year (2019)`,
+    subtitle: `Compare to last year (2021)`,
   },
 ];
 

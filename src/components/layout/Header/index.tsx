@@ -27,6 +27,12 @@ const AuthBox = styled.div`
   ${tw`flex items-center`}
 `;
 
+const SearchBox = styled.div`
+  ${tw`ml-4`}
+`;
+const Image = styled.img`
+  ${tw`h-full w-full block object-cover xl:px-6 `}
+`;
 interface IHeader {}
 
 const Header: React.FC<IHeader> = () => {
@@ -34,11 +40,15 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <HeaderAntd tw="bg-white p-0 flex items-center">
-      <Logo width={!navCollapsed ? 240 : 80}>123</Logo>
+      <Logo width={!navCollapsed ? 240 : 80}>
+        <Image
+          src="https://f002.backblazeb2.com/file/summonshop/logo.png"
+          alt="logo"
+        />
+      </Logo>
       <HeaderMain>
-        <NavSearch />
+        <SearchBox>{/* <NavSearch /> */}</SearchBox>
         <AuthBox>
-          <NavNotification />
           <NavProfile />
         </AuthBox>
       </HeaderMain>

@@ -18,9 +18,6 @@ import {
   getTags,
 } from "@redux/slices/common";
 
-import { RichEditor, version } from "react-quill-antd";
-import "react-quill-antd/dist/index.css";
-
 const { TreeNode } = TreeSelect;
 
 const rules = {
@@ -63,6 +60,7 @@ interface IGeneralField {
   handleUploadChangeImg: any;
   uploadedImgCover: any;
   handleUploadChangeImgCover: any;
+  handleRemoveImg: (id: string) => void;
 }
 
 const GeneralField: React.FC<IGeneralField> = ({
@@ -70,6 +68,7 @@ const GeneralField: React.FC<IGeneralField> = ({
   handleUploadChangeImgCover,
   uploadedImg,
   uploadedImgCover,
+  handleRemoveImg,
 }) => {
   const dispatch = useAppDispatch();
   const { categories, tags, brands, colors } = useAppSelector(
@@ -83,16 +82,29 @@ const GeneralField: React.FC<IGeneralField> = ({
   }, []);
 
   useEffect(() => {
-    console.log(tags);
-  }, [tags]);
-
-  useEffect(() => {
     if (categories && categories.length > 0) {
       return;
     }
 
     dispatch(getCategories());
   }, [categories]);
+
+  const onPreview = async (file: any) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+
+    const image = new Image();
+    image.src = src;
+
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
 
   return (
     <Row gutter={16}>
@@ -130,20 +142,27 @@ const GeneralField: React.FC<IGeneralField> = ({
             </Col>
           </Row>
           <Form.Item
-            name="description"
-            label="Description"
+            name="shortDescription"
+            label="Short Description"
+            rules={rules.description}
+          >
+            <Input.TextArea rows={2} />
+          </Form.Item>
+          <Form.Item
+            name="longDescription"
+            label="Long Description"
             rules={rules.description}
           >
             <Input.TextArea rows={4} />
           </Form.Item>
         </Card>
         <Card title="Organization">
-          <Form.Item name="category" label="Category">
+          <Form.Item name="categories" label="Categories">
             <TreeSelect
               showSearch
               multiple
               className="w-100"
-              placeholder="Category"
+              placeholder="Categories"
             >
               {categories.map((elmLv1) => (
                 <TreeNode
@@ -163,7 +182,7 @@ const GeneralField: React.FC<IGeneralField> = ({
                         <TreeNode
                           key={`${elmLv3._id}`}
                           value={`${elmLv3._id}`}
-                          title={elmLv3.name}
+                          title={`${elmLv1.name} / ${elmLv2.name} / ${elmLv3.name}`}
                         ></TreeNode>
                       ))}
                     </TreeNode>
@@ -190,7 +209,7 @@ const GeneralField: React.FC<IGeneralField> = ({
                     <TreeNode
                       key={`${elmLv2._id}`}
                       value={`${elmLv2._id}`}
-                      title={`${elmLv2.name}`}
+                      title={`${elmLv1.name} / ${elmLv2.name}`}
                     />
                   ))}
                 </TreeNode>
@@ -218,6 +237,7 @@ const GeneralField: React.FC<IGeneralField> = ({
                 name="discountPrice"
                 label="Discount Price"
                 rules={rules.discountPrice}
+                className="text-inline"
               >
                 <InputNumber
                   className="w-100"
@@ -232,13 +252,18 @@ const GeneralField: React.FC<IGeneralField> = ({
           </Row>
         </Card>
         <Card title="Media">
-          <ImgCrop>
+          <ImgCrop rotate>
             <Upload
               accept=".png, .jpg, .jpeg"
               listType="picture-card"
               fileList={uploadedImg}
               beforeUpload={() => false}
               onChange={(e) => handleUploadChangeImg(e)}
+              onPreview={(e) => onPreview(e)}
+              onRemove={(e) => {
+                handleRemoveImg?.(e.uid);
+                return false;
+              }}
             >
               {"+ Upload"}
             </Upload>

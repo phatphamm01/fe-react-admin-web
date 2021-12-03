@@ -22,9 +22,6 @@ const VariationField = (props: any) => {
   useEffect(() => {
     dispatch(dispatch(getSizes()));
   }, []);
-  useEffect(() => {
-    console.log(sizes);
-  }, [sizes]);
 
   return (
     <Card title="Variants">

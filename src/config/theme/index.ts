@@ -46,7 +46,7 @@ export const navList: INav[] = [
   {
     key: "order",
     path: `order`,
-    title: "Dashboard",
+    title: "Order",
     icon: ShoppingCartOutlined,
     submenu: [],
   },

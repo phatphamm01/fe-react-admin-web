@@ -44,18 +44,17 @@ export const NavSearch: React.FC = (props) => {
     setOptions(value ? searchResult(value) : []);
   };
 
-  const onSelect = (value: string) => {
-    console.log("onSelect", value);
-  };
   return (
     <AutoComplete
-      dropdownMatchSelectWidth={252}
-      style={{ width: 300 }}
+      dropdownClassName="nav-search-dropdown"
       options={options}
-      onSelect={onSelect}
       onSearch={handleSearch}
+      // value={value}
+      // filterOption={(inputValue, option) =>
+      //   option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+      // }
     >
-      <Input.Search size="large" placeholder="input here" enterButton />
+      <Input.Search placeholder="Search..." enterButton />
     </AutoComplete>
   );
 };

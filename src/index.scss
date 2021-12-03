@@ -1,7 +1,7 @@
+// @import "~antd/dist/antd.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-// @import "~antd/dist/antd.css";
 
 body {
   margin: 0;
@@ -15,4 +15,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.text-inline {
+  & label {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
 }
