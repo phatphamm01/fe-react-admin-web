@@ -7,7 +7,9 @@ const url = {
   getProductDetail: ({ id }: any) => `products/${id}`,
   getFacet: (payload: any) => `categories/${payload.id}/products/facets`,
   getVariant: (payload: any) => `products/${payload.id}/variations`,
-  addProduct: (payload: any) => `products/${payload.id}`,
+  editProduct: (payload: any) => `products/${payload.id}`,
+  deleteProduct: (payload: any) => `products/${payload.id}`,
+  addProduct: (payload: any) => `products`,
 };
 
 const fetchProduct = {
@@ -35,8 +37,19 @@ const fetchProduct = {
     const response = await AxiosService.get(url.getVariant(payload));
     return response;
   },
-  async addProduct(payload: any) {
+  async editProduct(payload: any) {
     const response = await AxiosService.patch(
+      url.editProduct(payload),
+      payload.data
+    );
+    return response;
+  },
+  async deleteProduct(payload: any) {
+    const response = await AxiosService.delete(url.deleteProduct(payload));
+    return response;
+  },
+  async addProduct(payload: any) {
+    const response = await AxiosService.post(
       url.addProduct(payload),
       payload.data
     );

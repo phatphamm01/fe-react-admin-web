@@ -9,6 +9,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useAppSelector } from "@hook/redux";
+import { useNavigate } from "react-router-dom";
 
 const menuItem = [
   {
@@ -34,8 +35,15 @@ const menuItem = [
   },
 ];
 
-export const NavProfile = ({ signOut }: any) => {
+export const NavProfile = () => {
   const { user } = useAppSelector((state) => state.userReducers);
+  const navigate = useNavigate();
+
+  const signOut = () => {
+    localStorage.clear();
+    location.reload();
+  };
+
   const profileImg = "/img/avatars/thumb-1.jpg";
   const profileMenu = (
     <div className="nav-profile nav-dropdown">

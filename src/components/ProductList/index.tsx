@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, TreeSelect, Input, Button, Menu } from "antd";
+import { Card, Table, TreeSelect, Input, Button, Menu, message } from "antd";
 import {
   EyeOutlined,
   DeleteOutlined,
@@ -18,6 +18,7 @@ import { getCategories } from "@redux/slices/common";
 import { getProductsByType } from "@redux/slices/product";
 import { IAllProducts, IProduct } from "@redux/types/product";
 import { StarOutlined, StarFilled } from "@ant-design/icons";
+import fetchProduct from "@services/products";
 
 const { TreeNode } = TreeSelect;
 
@@ -41,6 +42,13 @@ const ProductList = () => {
     }
   }, [productsByType]);
 
+  const handleShowCategory = (value: string) => {
+    let id = value.split("/").at(0) + "";
+
+    handleGetProductApi(id);
+    setList(productsByType);
+  };
+
   const handleGetProductApi = (id: string) => {
     const payload = {
       id: id,
@@ -48,26 +56,25 @@ const ProductList = () => {
     dispatch(getProductsByType(payload));
   };
 
-  const dropdownMenu = (row: IProduct) => (
-    <Menu>
-      <Menu.Item onClick={() => viewDetails(row)}>
-        <Flex alignItems="center">
-          <EyeOutlined />
-          <span className="ml-2">View Details</span>
-        </Flex>
-      </Menu.Item>
-      <Menu.Item onClick={() => deleteRow(row)}>
-        <Flex alignItems="center">
-          <DeleteOutlined />
-          <span className="ml-2">
-            {selectedRows.length > 0
-              ? `Delete (${selectedRows.length})`
-              : "Delete"}
-          </span>
-        </Flex>
-      </Menu.Item>
-    </Menu>
-  );
+  const deleteProductApi = async (id: string) => {
+    try {
+      await fetchProduct.deleteProduct({
+        id: id,
+      });
+      message.success(`Delete Success`);
+      location.reload();
+    } catch (error) {
+      console.log(error);
+      message.error(`Delete Success`);
+    }
+  };
+
+  const onSearch = (e: any) => {
+    const value = e.currentTarget.value;
+    const searchArray = e.currentTarget.value ? list : productsByType;
+    const data = utils.wildCardSearch(searchArray!, value);
+    setList(data);
+  };
 
   const addProduct = () => {
     navigate(`/product-add`);
@@ -75,21 +82,6 @@ const ProductList = () => {
 
   const viewDetails = (row: IProduct) => {
     navigate(`/product-edit/${row?._id}`);
-  };
-
-  const deleteRow = (row: any) => {
-    const objKey = "id";
-    // let data = list;
-    // if (selectedRows.length > 1) {
-    //   selectedRows.forEach((elm: any) => {
-    //     data = utils.deleteArrayRow(data, objKey, elm?.id);
-    //     setList(data);
-    //     setSelectedRows([]);
-    //   });
-    // } else {
-    //   data = utils.deleteArrayRow(data, objKey, row.id);
-    //   setList(data);
-    // }
   };
 
   const tableColumns = [
@@ -153,19 +145,26 @@ const ProductList = () => {
     },
   ];
 
-  const onSearch = (e: any) => {
-    const value = e.currentTarget.value;
-    const searchArray = e.currentTarget.value ? list : productsByType;
-    const data = utils.wildCardSearch(searchArray!, value);
-    setList(data);
-  };
-
-  const handleShowCategory = (value: string) => {
-    let id = value.split("/").at(0) + "";
-
-    handleGetProductApi(id);
-    setList(productsByType);
-  };
+  const dropdownMenu = (row: IProduct) => (
+    <Menu>
+      <Menu.Item onClick={() => viewDetails(row)}>
+        <Flex alignItems="center">
+          <EyeOutlined />
+          <span className="ml-2">View Details</span>
+        </Flex>
+      </Menu.Item>
+      <Menu.Item onClick={() => deleteProductApi(row._id)}>
+        <Flex alignItems="center">
+          <DeleteOutlined />
+          <span className="ml-2">
+            {selectedRows.length > 0
+              ? `Delete (${selectedRows.length})`
+              : "Delete"}
+          </span>
+        </Flex>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Card>

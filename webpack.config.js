@@ -1,6 +1,5 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   mode: "development",
@@ -12,7 +11,7 @@ module.exports = {
   },
   entry: path.join(__dirname, "src", "index.tsx"),
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "build"),
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
     publicPath: "/",
@@ -32,14 +31,25 @@ module.exports = {
         ],
       },
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.(sa|sc|c|le)ss$/,
         use: [
-          // Creates `style` nodes from JS strings
-          "style-loader",
-          // Translates CSS into CommonJS
-          "css-loader",
-          // Compiles Sass to CSS
-          "sass-loader",
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+          },
+          {
+            loader: "sass-loader",
+          },
+          {
+            loader: "less-loader",
+            options: {
+              lessOptions: {
+                strictMath: true,
+              },
+            },
+          },
         ],
       },
       {
@@ -58,10 +68,6 @@ module.exports = {
       favicon: "./public/favicon.ico",
       filename: "index.html",
       manifest: "./public/manifest.json",
-    }),
-    new MiniCssExtractPlugin({
-      filename: "[name].bundle.css",
-      chunkFilename: "[id].css",
     }),
   ],
   resolve: {

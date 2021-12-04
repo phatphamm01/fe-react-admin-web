@@ -85,11 +85,11 @@ const ProductForm = (props: any) => {
         shortDescription: productDetail.shortDescription,
         categories: productDetail.categories,
         name: productDetail.name,
-        tags: productDetail.filters,
+        filters: productDetail.filters,
         price: productDetail.price,
         discountPrice: productDetail.discountPrice,
         variants: productDetail.variants,
-        brand: productDetail.brandId,
+        brand: productDetail.brandId + "/" + productDetail.brand,
         color: productDetail.color,
       });
 
@@ -156,25 +156,57 @@ const ProductForm = (props: any) => {
       .validateFields()
       .then(async (values) => {
         // setSubmitLoading(false);
+        let { brand, price, discountPrice, variants } = values;
+
+        let dataBrand = brand.split("/");
+        console.log(variants);
+
+        if (variants && (variants as Array<any>).length > 0) {
+          variants = variants.map((value: any) => {
+            let { size } = value;
+            let dataSize = size.split("/");
+            if (dataSize.length > 1) {
+              return {
+                ...value,
+                sizeId: dataSize[0],
+                size: dataSize[1],
+              };
+            }
+            return {
+              ...value,
+            };
+          });
+        }
+
+        console.log(variants);
+
         let data = {
           ...productDetail,
           ...values,
+          brand: dataBrand[1],
+          brandId: dataBrand[0],
+          discountPrice: Number(discountPrice),
+          price: Number(price),
+          variants: variants,
           images: uploadedImg.map((value: any) => value.url || value.thumbUrl),
           imageCovers: uploadedImgCover.map(
             (value: any) => value.url || value.thumbUrl
           ),
         };
 
-        console.log(uploadedImg);
         console.log(data);
 
         delete data._id;
 
         if (mode === ADD) {
           message.success(`Created ${values.name} to product list`);
+          await fetchProduct.addProduct({
+            data: data,
+          });
+          message.success(`Product saved`);
         }
         if (mode === EDIT) {
-          await fetchProduct.addProduct({
+          await fetchProduct.editProduct({
             id: productDetail._id,
             data: data,
           });

@@ -119,8 +119,8 @@ const GeneralField: React.FC<IGeneralField> = ({
                 <TreeSelect showSearch className="w-100" placeholder="Sizes">
                   {brands.map((elmLv1) => (
                     <TreeNode
-                      key={`${elmLv1._id}`}
-                      value={`${elmLv1._id}`}
+                      key={`${elmLv1._id}/${elmLv1.name}`}
+                      value={`${elmLv1._id}/${elmLv1.name}`}
                       title={`${elmLv1.name}`}
                     />
                   ))}
@@ -191,12 +191,12 @@ const GeneralField: React.FC<IGeneralField> = ({
               ))}
             </TreeSelect>
           </Form.Item>
-          <Form.Item name="tags" label="Tags">
+          <Form.Item name="filters" label="Filters">
             <TreeSelect
               showSearch
               multiple
               className="w-100"
-              placeholder="Tags"
+              placeholder="filters"
             >
               {tags.map((elmLv1) => (
                 <TreeNode
@@ -252,35 +252,31 @@ const GeneralField: React.FC<IGeneralField> = ({
           </Row>
         </Card>
         <Card title="Media">
-          <ImgCrop rotate>
-            <Upload
-              accept=".png, .jpg, .jpeg"
-              listType="picture-card"
-              fileList={uploadedImg}
-              beforeUpload={() => false}
-              onChange={(e) => handleUploadChangeImg(e)}
-              onPreview={(e) => onPreview(e)}
-              onRemove={(e) => {
-                handleRemoveImg?.(e.uid);
-                return false;
-              }}
-            >
-              {"+ Upload"}
-            </Upload>
-          </ImgCrop>
+          <Upload
+            accept=".png, .jpg, .jpeg"
+            listType="picture-card"
+            fileList={uploadedImg}
+            beforeUpload={() => false}
+            onChange={(e) => handleUploadChangeImg(e)}
+            onPreview={(e) => onPreview(e)}
+            onRemove={(e) => {
+              handleRemoveImg?.(e.uid);
+              return false;
+            }}
+          >
+            {"+ Upload"}
+          </Upload>
         </Card>
         <Card title="Media">
-          <ImgCrop>
-            <Upload
-              accept=".png, .jpg, .jpeg"
-              listType="picture-card"
-              fileList={uploadedImgCover}
-              beforeUpload={() => false}
-              onChange={(e) => handleUploadChangeImgCover(e)}
-            >
-              {"+ Upload"}
-            </Upload>
-          </ImgCrop>
+          <Upload
+            accept=".png, .jpg, .jpeg"
+            listType="picture-card"
+            fileList={uploadedImgCover}
+            beforeUpload={() => false}
+            onChange={(e) => handleUploadChangeImgCover(e)}
+          >
+            {"+ Upload"}
+          </Upload>
         </Card>
       </Col>
     </Row>

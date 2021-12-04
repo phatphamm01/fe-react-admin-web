@@ -30,6 +30,8 @@ export const LoginForm = (props: any) => {
 
     StorageToken.setUser(result.token);
     dispatch(getUserSuccess(result.data));
+
+    navigate("/");
   };
 
   useEffect(() => {
