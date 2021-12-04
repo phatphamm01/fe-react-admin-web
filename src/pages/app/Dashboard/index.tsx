@@ -280,7 +280,7 @@ export const DefaultDashboard = () => {
           <Row gutter={16}>
             <Col span={24}>
               <ChartWidget
-                title="Unique Visitors"
+                title="Sales"
                 series={visitorChartData?.series}
                 xAxis={visitorChartData?.categories}
                 height={"400px"}
