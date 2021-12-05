@@ -121,6 +121,7 @@ const ProductForm = (props: any) => {
     setUploadedImg((value: any) => [
       ...value,
       {
+        file: true,
         uid: uuidv4(),
         url: imageBase64,
       },
@@ -144,6 +145,7 @@ const ProductForm = (props: any) => {
     setUploadedImgCover((value: any) => [
       ...value,
       {
+        file: true,
         uid: uuidv4(),
         url: imageBase64,
       },
@@ -188,9 +190,11 @@ const ProductForm = (props: any) => {
           discountPrice: Number(discountPrice),
           price: Number(price),
           variants: variants,
-          images: uploadedImg.map((value: any) => value.url || value.thumbUrl),
-          imageCovers: uploadedImgCover.map(
-            (value: any) => value.url || value.thumbUrl
+          images: uploadedImg.map((value: any) =>
+            !value.file ? value.url : { data: value.url }
+          ),
+          imageCovers: uploadedImgCover.map((value: any) =>
+            !value.file ? value.url : { data: value.url }
           ),
         };
 
