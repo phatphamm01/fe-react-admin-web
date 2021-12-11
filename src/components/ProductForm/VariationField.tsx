@@ -57,10 +57,9 @@ const VariationField = (props: any) => {
                         {sizes.map((elmLv1) =>
                           elmLv1.id === "000008" ? (
                             <TreeNode
-                              key={`${elmLv1.id}`}
-                              value={`${elmLv1.id}`}
+                              key={`${elmLv1.id}/${elmLv1.name}`}
+                              value={`${elmLv1.id}/${elmLv1.name}`}
                               title={`${elmLv1.name}`}
-                           
                             />
                           ) : (
                             <TreeNode
