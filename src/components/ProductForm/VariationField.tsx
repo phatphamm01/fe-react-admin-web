@@ -60,7 +60,7 @@ const VariationField = (props: any) => {
                               key={`${elmLv1.id}`}
                               value={`${elmLv1.id}`}
                               title={`${elmLv1.name}`}
-                              selectable={false}
+                           
                             />
                           ) : (
                             <TreeNode
