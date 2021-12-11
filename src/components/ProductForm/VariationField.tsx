@@ -54,23 +54,31 @@ const VariationField = (props: any) => {
                         className="w-100"
                         placeholder="Sizes"
                       >
-                        <TreeNode value="000008" title={`Default`} />
-                        {sizes.map((elmLv1) => (
-                          <TreeNode
-                            key={`${elmLv1.id}`}
-                            value={`${elmLv1.id}`}
-                            title={`${elmLv1.name}`}
-                            selectable={false}
-                          >
-                            {elmLv1.children?.map((elmLv2) => (
-                              <TreeNode
-                                key={`${elmLv2.id}/${elmLv2.name}`}
-                                value={`${elmLv2.id}/${elmLv2.name}`}
-                                title={`${elmLv2.name}`}
-                              />
-                            ))}
-                          </TreeNode>
-                        ))}
+                        {sizes.map((elmLv1) =>
+                          elmLv1.id === "000008" ? (
+                            <TreeNode
+                              key={`${elmLv1.id}`}
+                              value={`${elmLv1.id}`}
+                              title={`${elmLv1.name}`}
+                              selectable={false}
+                            />
+                          ) : (
+                            <TreeNode
+                              key={`${elmLv1.id}`}
+                              value={`${elmLv1.id}`}
+                              title={`${elmLv1.name}`}
+                              selectable={false}
+                            >
+                              {elmLv1.children?.map((elmLv2) => (
+                                <TreeNode
+                                  key={`${elmLv2.id}/${elmLv2.name}`}
+                                  value={`${elmLv2.id}/${elmLv2.name}`}
+                                  title={`${elmLv2.name}`}
+                                />
+                              ))}
+                            </TreeNode>
+                          )
+                        )}
                       </TreeSelect>
                     </Form.Item>
                   </Col>
