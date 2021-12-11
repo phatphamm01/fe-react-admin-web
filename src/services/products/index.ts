@@ -10,6 +10,7 @@ const url = {
   editProduct: (payload: any) => `products/${payload.id}`,
   deleteProduct: (payload: any) => `products/${payload.id}`,
   addProduct: (payload: any) => `products`,
+  uploadFeatured: (payload: any) => `products/${payload.id}`,
 };
 
 const fetchProduct = {
@@ -38,7 +39,7 @@ const fetchProduct = {
     return response;
   },
   async editProduct(payload: any) {
-    const response = await AxiosService.patch(
+    const response = await AxiosService.put(
       url.editProduct(payload),
       payload.data
     );
@@ -51,6 +52,13 @@ const fetchProduct = {
   async addProduct(payload: any) {
     const response = await AxiosService.post(
       url.addProduct(payload),
+      payload.data
+    );
+    return response;
+  },
+  async uploadFetuere(payload: any) {
+    const response = await AxiosService.put(
+      url.uploadFeatured(payload),
       payload.data
     );
     return response;

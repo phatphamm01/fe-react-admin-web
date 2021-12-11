@@ -197,20 +197,24 @@ export const DefaultDashboard = () => {
     getDashboardApi();
   }, []);
   useEffect(() => {
+    console.log(visitorChartData);
+  }, [visitorChartData]);
+
+  useEffect(() => {
     if (dashboard && dashboard.chartSale) {
       let {
-        chartSale = [],
+        chartSale,
         chartUser = [],
-        sale,
-        sold,
-        user,
+        revenue,
+        amountSold,
+        users,
         newBills,
-        newUsers,
+        countNewUser,
       } = dashboard;
       setVisitorChartData({
         series: [
           {
-            name: "$",
+            name: "Session Duration",
             data: chartSale.values,
           },
         ],
@@ -227,29 +231,29 @@ export const DefaultDashboard = () => {
       setAnnualStatisticData([
         {
           title: "Sale",
-          value: "$" + sale.total,
-          status: Number(sale.totalGrowthRate),
-          subtitle: "Compare to " + sale.prevMonth,
+          value: "$" + revenue.total,
+          status: Number(revenue.growthRate),
+          subtitle: "Compare to " + revenue.prevMonth,
         },
         {
           title: "Sold",
-          value: "$" + sold.count,
-          status: Number(sold.countGrowthRate),
-          subtitle: "Compare to " + sold.prevMonth,
+          value: "$" + amountSold.amount,
+          status: Number(amountSold.growthRate),
+          subtitle: "Compare to " + amountSold.prevMonth,
         },
         {
           title: "User",
-          value: user.newUser + "",
-          status: Number(user.newUserGrowthRate),
-          subtitle: "Compare to " + user.prevMonth,
+          value: countNewUser.count + "",
+          status: Number(countNewUser.growthRate),
+          subtitle: "Compare to " + countNewUser.prevMonth,
         },
       ]);
 
       setRecentTransactionData(newBills);
 
       setNewMembersData(
-        newUsers.map((value: any) => ({
-          img: "/img/avatars/thumb-2.jpg",
+        users.map((value: any) => ({
+          img: value.photo || "/img/avatars/thumb-2.jpg",
           title: value.email,
           name: value.fname + " " + value.lname,
         }))
@@ -279,13 +283,24 @@ export const DefaultDashboard = () => {
           </Row>
           <Row gutter={16}>
             <Col span={24}>
-              <ChartWidget
-                title="Sales"
-                series={visitorChartData?.series}
-                xAxis={visitorChartData?.categories}
-                height={"400px"}
-                direction={"ltr"}
-              />
+              {!visitorChartData && (
+                <ChartWidget
+                  title="Sales"
+                  series={VisitorChartData?.series}
+                  xAxis={VisitorChartData?.categories}
+                  height={"400px"}
+                  direction={"ltr"}
+                />
+              )}
+              {visitorChartData && (
+                <ChartWidget
+                  title="Sales"
+                  series={visitorChartData?.series}
+                  xAxis={visitorChartData?.categories}
+                  height={"400px"}
+                  direction={"ltr"}
+                />
+              )}
             </Col>
           </Row>
         </Col>
@@ -301,10 +316,11 @@ export const DefaultDashboard = () => {
               <MembersChart
                 options={memberChartOption}
                 series={activeMembersData}
-                height={186}
+                height={143}
               />
             }
-            subtitle="Active members"
+            value={dashboard?.chartUser?.currMonth || "..."}
+            subtitle={"New user chart"}
           />
         </Col>
       </Row>

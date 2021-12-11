@@ -3,6 +3,7 @@ import {
   PieChartOutlined,
   ShoppingCartOutlined,
   AccountBookOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 interface INav {
@@ -48,6 +49,13 @@ export const navList: INav[] = [
     path: `order`,
     title: "Order",
     icon: ShoppingCartOutlined,
+    submenu: [],
+  },
+  {
+    key: "user",
+    path: `user`,
+    title: "Users",
+    icon: UserOutlined,
     submenu: [],
   },
 ];

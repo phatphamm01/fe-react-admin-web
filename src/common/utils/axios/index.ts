@@ -14,13 +14,14 @@ export type Method =
   | "link"
   | "unlink";
 
-axios.defaults.baseURL = "https://shopme-three.vercel.app/api/v1/";
+axios.defaults.baseURL =
+  "http://summonapi-env.eba-gp3k32fe.ap-southeast-1.elasticbeanstalk.com/api/v1/";
 
 class AxiosService {
   #instance: AxiosInstance;
   constructor() {
     const instance = axios.create({
-      timeout: 20000,
+      timeout: 30000,
       headers: {
         "Content-Type": "application/json",
       },
@@ -46,6 +47,18 @@ class AxiosService {
         return response;
       },
       (error: AxiosError) => {
+        console.log(error.message);
+
+        if (error.message === "Request failed with status code 403") {
+          localStorage.clear();
+          location.reload();
+        }
+
+        if (error.message.indexOf("JWT expired") !== -1) {
+          localStorage.clear();
+          location.reload();
+        }
+
         return Promise.reject(handleError(error));
       }
     );
@@ -73,10 +86,10 @@ class AxiosService {
     }
   }
 
-  async patch(url: string, data?: IDataAxios): IResponseAxios {
+  async put(url: string, data?: IDataAxios): IResponseAxios {
     try {
       return await (
-        await this.#instance.patch(url, data)
+        await this.#instance.put(url, data)
       ).data;
     } catch (error) {
       return error;

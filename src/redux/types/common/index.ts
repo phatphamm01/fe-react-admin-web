@@ -10,23 +10,23 @@ export interface ICategory {
 export type ICategoies = Array<ICategory>;
 
 export interface ITag {
-  _id: string;
+  id: string;
   type: string;
   name: string;
-  children: Array<{ _id: string; type: string; name: string }>;
+  children: Array<{ id: string; type: string; name: string }>;
 }
 export type ITags = Array<ITag>;
 
 export interface ISize {
-  _id: string;
+  id: string;
   type: string;
   name: string;
-  children: Array<{ _id: string; type: string; name: string }>;
+  children: Array<{ id: string; type: string; name: string }>;
 }
 export type ISizes = Array<ISize>;
 
 export interface IOption {
-  _id: string;
+  id: string;
   type: string;
   name: string;
 }

@@ -116,11 +116,11 @@ const GeneralField: React.FC<IGeneralField> = ({
           <Row gutter={16}>
             <Col xs={24} sm={24} md={12}>
               <Form.Item name="brand" label="Brand" rules={rules.name}>
-                <TreeSelect showSearch className="w-100" placeholder="Sizes">
+                <TreeSelect showSearch className="w-100" placeholder="Brand">
                   {brands.map((elmLv1) => (
                     <TreeNode
-                      key={`${elmLv1._id}/${elmLv1.name}`}
-                      value={`${elmLv1._id}/${elmLv1.name}`}
+                      key={`${elmLv1.id}/${elmLv1.name}`}
+                      value={`${elmLv1.id}/${elmLv1.name}`}
                       title={`${elmLv1.name}`}
                     />
                   ))}
@@ -129,11 +129,11 @@ const GeneralField: React.FC<IGeneralField> = ({
             </Col>
             <Col xs={24} sm={24} md={12}>
               <Form.Item name="color" label="Color" rules={rules.name}>
-                <TreeSelect showSearch className="w-100" placeholder="Sizes">
+                <TreeSelect showSearch className="w-100" placeholder="Color">
                   {colors.map((elmLv1) => (
                     <TreeNode
-                      key={`${elmLv1._id}`}
-                      value={`${elmLv1._id}`}
+                      key={`${elmLv1.id}`}
+                      value={`${elmLv1.id}`}
                       title={`${elmLv1.name}`}
                     />
                   ))}
@@ -196,19 +196,19 @@ const GeneralField: React.FC<IGeneralField> = ({
               showSearch
               multiple
               className="w-100"
-              placeholder="filters"
+              placeholder="Filters"
             >
               {tags.map((elmLv1) => (
                 <TreeNode
-                  key={`${elmLv1._id}`}
-                  value={`${elmLv1._id}`}
+                  key={`${elmLv1.id}`}
+                  value={`${elmLv1.id}`}
                   title={`${elmLv1.name}`}
                   selectable={false}
                 >
                   {elmLv1.children?.map((elmLv2) => (
                     <TreeNode
-                      key={`${elmLv2._id}`}
-                      value={`${elmLv2._id}`}
+                      key={`${elmLv2.id}`}
+                      value={`${elmLv2.id}`}
                       title={`${elmLv1.name} / ${elmLv2.name}`}
                     />
                   ))}

@@ -207,7 +207,7 @@ const ProductForm = (props: any) => {
         }
         if (mode === EDIT) {
           await fetchProduct.editProduct({
-            id: productDetail._id,
+            id: productDetail.id,
             data: data,
           });
           message.success(`Product saved`);
@@ -246,7 +246,14 @@ const ProductForm = (props: any) => {
                 {mode === "ADD" ? "Add New Product" : `Edit Product`}{" "}
               </h2>
               <div className="mb-3">
-                <Button className="mr-2">Discard</Button>
+                <Button
+                  onClick={() => {
+                    location.reload();
+                  }}
+                  className="mr-2"
+                >
+                  Reload
+                </Button>
                 <Button
                   type="primary"
                   onClick={() => onFinish()}

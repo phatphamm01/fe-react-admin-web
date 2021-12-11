@@ -67,7 +67,7 @@ const Orders = () => {
   const tableColumns = [
     {
       title: "ID",
-      dataIndex: "_id",
+      dataIndex: "id",
     },
     {
       title: "Date",
@@ -113,11 +113,6 @@ const Orders = () => {
             />
           </div>
         </Flex>
-        <div>
-          <Button type="primary" icon={<FileExcelOutlined />} block>
-            Export All
-          </Button>
-        </div>
       </Flex>
       <div className="table-responsive">
         <Table columns={tableColumns} dataSource={list} rowKey="_id" />

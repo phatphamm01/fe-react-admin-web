@@ -38,12 +38,12 @@ const commonSlice = createSlice({
 
     getColors() {},
     getColorsSuccess(state, action) {
-      state.colors = action.payload;
+      state.colors = action.payload[0].children;
     },
 
     getBrands() {},
     getBrandsSuccess(state, action) {
-      state.brands = action.payload;
+      state.brands = action.payload[0].children;
     },
   },
 });

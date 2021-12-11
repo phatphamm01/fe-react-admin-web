@@ -81,13 +81,31 @@ const ProductList = () => {
   };
 
   const viewDetails = (row: IProduct) => {
-    navigate(`/product-edit/${row?._id}`);
+    navigate(`/product-edit/${row?.id}`);
+  };
+
+  const handleFeature = async (id: string, status: boolean) => {
+    try {
+      let payload = { id: id, data: { isFeatured: status } };
+      let newList = list?.map((value) =>
+        value.id === id ? { ...value, isFeatured: status } : value
+      );
+
+      setList(newList);
+
+      let response = await fetchProduct.uploadFetuere(payload);
+      console.log(response);
+
+      message.success(`Change success`);
+    } catch (error) {
+      message.success(`Change fail`);
+    }
   };
 
   const tableColumns = [
     {
       title: "ID",
-      dataIndex: "_id",
+      dataIndex: "id",
     },
     {
       title: "Product",
@@ -126,13 +144,19 @@ const ProductList = () => {
       render: (_: any, record: IProduct) => (
         <Flex alignItems="center">
           {record.isFeatured ? (
-            <StarFilled style={{ fontSize: "20px", color: "red" }} />
+            <StarFilled
+              onClick={() => handleFeature(record.id, false)}
+              style={{ fontSize: "20px", color: "red" }}
+            />
           ) : (
-            <StarOutlined style={{ fontSize: "20px" }} />
+            <StarOutlined
+              onClick={() => handleFeature(record.id, true)}
+              style={{ fontSize: "20px" }}
+            />
           )}
         </Flex>
       ),
-      sorter: (a: any, b: any) => utils.antdTableSorter(a, b, "stock"),
+      sorter: (a: any, b: any) => utils.antdTableSorter(a, b, "isFeatured"),
     },
     {
       title: "",
@@ -153,7 +177,7 @@ const ProductList = () => {
           <span className="ml-2">View Details</span>
         </Flex>
       </Menu.Item>
-      <Menu.Item onClick={() => deleteProductApi(row._id)}>
+      <Menu.Item onClick={() => deleteProductApi(row.id)}>
         <Flex alignItems="center">
           <DeleteOutlined />
           <span className="ml-2">

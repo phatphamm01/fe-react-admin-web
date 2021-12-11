@@ -17,7 +17,7 @@ export interface IVariant {
 }
 
 export interface IProductDetail {
-  _id?: string;
+  id?: string;
   name?: string;
   categories?: string[];
   categoryName?: string;
@@ -39,7 +39,7 @@ export interface IProductDetail {
 }
 
 export interface IProduct {
-  _id: string;
+  id: string;
   name: string;
   category: string;
   categoryName: string;

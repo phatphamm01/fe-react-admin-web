@@ -44,7 +44,7 @@ export const NavProfile = () => {
     location.reload();
   };
 
-  const profileImg = "/img/avatars/thumb-1.jpg";
+  const profileImg = user.photo || "/img/avatars/thumb-1.jpg";
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
       <div className="nav-profile-header">
