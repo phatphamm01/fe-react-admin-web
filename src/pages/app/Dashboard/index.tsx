@@ -237,7 +237,7 @@ export const DefaultDashboard = () => {
         },
         {
           title: "Sold",
-          value: "$" + amountSold.amount,
+          value: amountSold.amount,
           status: parseFloat(amountSold.growthRate).toFixed(2) || "0",
           subtitle: "Compare to " + amountSold.prevMonth,
         },
