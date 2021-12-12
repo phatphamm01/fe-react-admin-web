@@ -173,7 +173,7 @@ export const DefaultDashboard = () => {
     {
       title: string;
       value: string;
-      status: number;
+      status: any;
       subtitle: string;
     }[]
   >(AnnualStatisticData);
@@ -232,19 +232,19 @@ export const DefaultDashboard = () => {
         {
           title: "Sale",
           value: "$" + revenue.total,
-          status: Number(revenue.growthRate),
+          status: parseFloat(revenue.growthRate).toFixed(2) || "0",
           subtitle: "Compare to " + revenue.prevMonth,
         },
         {
           title: "Sold",
           value: "$" + amountSold.amount,
-          status: Number(amountSold.growthRate),
+          status: parseFloat(amountSold.growthRate).toFixed(2) || "0",
           subtitle: "Compare to " + amountSold.prevMonth,
         },
         {
           title: "User",
           value: countNewUser.count + "",
-          status: Number(countNewUser.growthRate),
+          status: parseFloat(countNewUser.growthRate).toFixed(2) || "0",
           subtitle: "Compare to " + countNewUser.prevMonth,
         },
       ]);
